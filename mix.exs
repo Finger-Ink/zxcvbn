@@ -11,7 +11,7 @@ defmodule Zxcvbn.MixProject do
       name: "Zxcvbn",
       description: "zxcvbn for Elixir using Rust NIF.",
       deps: [
-        {:rustler, "~> 0.22.0"},
+        {:rustler, "~> 0.28.0"},
         {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
         {:benchee, "~> 1.0", only: :dev}
         # {:zxcvbn, "~> 0.1.3", only: :dev}
