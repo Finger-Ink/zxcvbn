@@ -1,11 +1,8 @@
-#[macro_use]
-extern crate rustler;
-
 use rustler::{Encoder, Env, ListIterator, Term};
 use zxcvbn::{Entropy, ZxcvbnError};
 
 mod atoms {
-    atoms! {
+    rustler::atoms! {
         ok,
         error,
         nil,
@@ -24,7 +21,7 @@ mod atoms {
     }
 }
 
-rustler::init!("Elixir.Zxcvbn", [run]);
+rustler::init!("Elixir.Zxcvbn");
 
 struct EntropyWrap {
     entropy: Entropy,

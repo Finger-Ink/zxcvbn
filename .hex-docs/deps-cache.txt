@@ -1,0 +1,11 @@
+benchee
+deep_merge
+earmark_parser
+ex_doc
+jason
+makeup
+makeup_elixir
+makeup_erlang
+nimble_parsec
+rustler
+statistex
