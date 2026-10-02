@@ -1,5 +1,5 @@
 use rustler::{Encoder, Env, ListIterator, Term};
-use zxcvbn::{Entropy, ZxcvbnError};
+use zxcvbn::Entropy;
 
 mod atoms {
     rustler::atoms! {
@@ -74,7 +74,7 @@ impl Encoder for EntropyWrap {
             .unwrap();
 
         let mut feedback = ::rustler::types::map::map_new(env);
-        feedback = match entropy.feedback().clone() {
+        feedback = match entropy.feedback() {
             Some(feedback_value) => feedback
                 .map_put(
                     atoms::warning().encode(env),
@@ -108,7 +108,10 @@ impl Encoder for EntropyWrap {
         };
 
         let result = ::rustler::types::map::map_new(env)
-            .map_put(atoms::score().encode(env), entropy.score().encode(env))
+            .map_put(
+                atoms::score().encode(env),
+                u8::from(entropy.score()).encode(env),
+            )
             .ok()
             .unwrap()
             .map_put(atoms::guesses().encode(env), entropy.guesses().encode(env))
@@ -166,11 +169,12 @@ impl Encoder for RunReturn {
 
 #[rustler::nif(schedule = "DirtyCpu", name = "run_nif")]
 fn run(password: &str, inputs: ListIterator) -> RunReturn {
+    // zxcvbn 3 scores a blank password as 0; keep the error that `Zxcvbn.run` documents.
+    if password.is_empty() {
+        return RunReturn::Error("blank_password");
+    }
+
     let user_inputs = inputs.map(|i| i.decode().unwrap_or("")).collect::<Vec<_>>();
 
-    match zxcvbn::zxcvbn(password, &user_inputs) {
-        Ok(entropy) => RunReturn::Ok(entropy),
-        Err(ZxcvbnError::BlankPassword) => RunReturn::Error("blank_password"),
-        Err(ZxcvbnError::DurationOutOfRange) => RunReturn::Error("duration_out_of_range"),
-    }
+    RunReturn::Ok(zxcvbn::zxcvbn(password, &user_inputs))
 }

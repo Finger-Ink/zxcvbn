@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Ugrade rust & rustler.
+- Upgrade rustler to 0.38 and zxcvbn to 3.1.1. The score is unchanged; `{:error, "duration_out_of_range"}` can no longer occur.
 
 ## [1.0.4] - 2021-07-17
 
